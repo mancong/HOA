@@ -27,6 +27,7 @@ object Stage1Verifier {
         results += checkResourcesIndex(context)
         results += checkInstalledHaps(context)
         results += checkRuntimeClassLoading()
+        results += checkSystemres(context)
 
         // Summary
         val passed = results.count { it.passed }
@@ -83,9 +84,9 @@ object Stage1Verifier {
 
     private fun checkAssetFiles(context: Context): List<CheckResult> {
         val requiredAssets = listOf(
-            "arkui-x/dynamicHap/ets/modules.abc",
-            "arkui-x/dynamicHap/module.json",
-            "arkui-x/dynamicHap/resources.index"
+            "arkui-x/entry/ets/modules.abc",
+            "arkui-x/entry/module.json",
+            "arkui-x/entry/resources.index"
         )
         return requiredAssets.map { path ->
             val exists = try {
@@ -104,7 +105,7 @@ object Stage1Verifier {
 
     private fun checkAbcBytecode(context: Context): CheckResult {
         try {
-            context.assets.open("arkui-x/dynamicHap/ets/modules.abc").use { input ->
+            context.assets.open("arkui-x/entry/ets/modules.abc").use { input ->
                 val header = ByteArray(16)
                 val read = input.read(header)
                 if (read < 16) {
@@ -125,7 +126,7 @@ object Stage1Verifier {
                 val build = header[0x0F].toInt() and 0xFF
                 val versionStr = "$major.$minor.$feature.$build"
 
-                // ArkUI-X runtime v13 should run v12 bytecode
+                // ArkUI-X runtime v13 should run v12+ bytecode
                 val versionOk = major in 10..13
 
                 return CheckResult(
@@ -141,7 +142,7 @@ object Stage1Verifier {
 
     private fun checkModuleJson(context: Context): CheckResult {
         try {
-            context.assets.open("arkui-x/dynamicHap/module.json").bufferedReader().use { reader ->
+            context.assets.open("arkui-x/entry/module.json").bufferedReader().use { reader ->
                 val json = reader.readText()
                 val root = org.json.JSONObject(json)
                 val moduleObj = root.optJSONObject("module")
@@ -167,7 +168,7 @@ object Stage1Verifier {
 
     private fun checkResourcesIndex(context: Context): CheckResult {
         try {
-            context.assets.open("arkui-x/dynamicHap/resources.index").use { input ->
+            context.assets.open("arkui-x/entry/resources.index").use { input ->
                 val size = input.available()
                 val reasonable = size > 1000
                 return CheckResult(
@@ -214,5 +215,62 @@ object Stage1Verifier {
             passed = missing.isEmpty(),
             detail = if (missing.isEmpty()) "all ${classes.size} classes found" else "missing: ${missing.joinToString()}"
         )
+    }
+
+    private fun checkSystemres(context: Context): List<CheckResult> {
+        val results = mutableListOf<CheckResult>()
+
+        // 1. resources.index
+        results += try {
+            context.assets.open("arkui-x/systemres/resources.index").use { input ->
+                val size = input.available()
+                val ok = size > 100_000 // >100KB
+                CheckResult("SysRes/resources.index", ok, "${String.format("%.1f", size / 1024.0)} KB")
+            }
+        } catch (_: Exception) {
+            CheckResult("SysRes/resources.index", false, "MISSING — systemres not in assets")
+        }
+
+        if (!results.last().passed) return results // short-circuit: remaining checks all need assets
+
+        // 2. system .abc files
+        results += try {
+            val abcFiles = context.assets.list("arkui-x/systemres/abc") ?: emptyArray()
+            val ok = abcFiles.size >= 5
+            CheckResult("SysRes/abc files", ok, "${abcFiles.size} file(s): ${abcFiles.joinToString()}")
+        } catch (_: Exception) {
+            CheckResult("SysRes/abc files", false, "cannot list abc/")
+        }
+
+        // 3. fonts
+        results += try {
+            val fontFiles = context.assets.list("arkui-x/systemres/fonts") ?: emptyArray()
+            val ok = fontFiles.isNotEmpty()
+            CheckResult("SysRes/fonts", ok, "${fontFiles.size} file(s): ${fontFiles.joinToString()}")
+        } catch (_: Exception) {
+            CheckResult("SysRes/fonts", false, "cannot list fonts/")
+        }
+
+        // 4. icudt72l.dat (ICU data for text rendering)
+        results += try {
+            context.assets.open("arkui-x/systemres/icudt72l.dat").use { input ->
+                val size = input.available()
+                val ok = size > 1_000_000 // >1MB
+                CheckResult("SysRes/icudt72l.dat", ok, "${String.format("%.1f", size / (1024.0 * 1024.0))} MB")
+            }
+        } catch (_: Exception) {
+            CheckResult("SysRes/icudt72l.dat", false, "MISSING — text rendering may fail")
+        }
+
+        // 5. resources/base/media
+        results += try {
+            val mediaFiles = context.assets.list("arkui-x/systemres/resources/base/media") ?: emptyArray()
+            val ok = mediaFiles.size >= 50
+            CheckResult("SysRes/resources/base/media", ok, "${mediaFiles.size} media files")
+        } catch (_: Exception) {
+            CheckResult("SysRes/resources/base/media", false, "cannot list resources/base/media/")
+        }
+
+        return results
     }
 }
