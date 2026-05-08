@@ -74,9 +74,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         val assetItems = listOf(
-            "arkui-x/dynamicHap/ets/modules.abc",
-            "arkui-x/dynamicHap/module.json",
-            "arkui-x/dynamicHap/resources.index"
+            "arkui-x/entry/ets/modules.abc",
+            "arkui-x/entry/module.json",
+            "arkui-x/entry/resources.index"
         )
         val allAssetsPresent = assetItems.all { item ->
             try { assets.open(item).close(); true } catch (_: Exception) { false }
