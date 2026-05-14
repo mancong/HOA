@@ -202,7 +202,7 @@ record-name format differences between ArkUI-X and OHOS:
 |---|------|--------|---------|
 | 1 | `arkcompiler/ets_runtime/ecmascript/ecma_vm.h` | Add `isOhosHapMode_` flag + accessors | VM flag to conditionally activate OHOS behavior |
 | 2 | `arkcompiler/ets_runtime/ecmascript/platform/common/module.cpp` | `GetOutEntryPoint`: insert `src/main/` + wrap with `&` NORMALIZED_OHMURL_TAG when OHOS mode | OHOS ABC records use `&pkg/src/main/path&` format |
-| 3 | `arkcompiler/ets_runtime/ecmascript/platform/common/module_path_helper.cpp` | `ParseAbcPathAndOhmUrl` + `ParseUrl`: OHOS-mode path logic | OHOS records omit bundleName prefix |
+| 3 | `arkcompiler/ets_runtime/ecmascript/module/module_path_helper.cpp` | `ParseAbcPathAndOhmUrl` + `ParseUrl`: OHOS-mode path logic | OHOS records omit bundleName prefix |
 | 4 | `arkcompiler/ets_runtime/ecmascript/jspandafile/js_pandafile_executor.cpp` | Guard `AdaptOldIsaRecord` with `!vm->IsOhosHapMode()` | Skip ArkUI-X record format adaptation |
 | 5 | `arkcompiler/ets_runtime/ecmascript/napi/jsnapi_expo.cpp` + `.h` | Add `SetGlobalOhosHapMode`/`GetGlobalOhosHapMode` | Global flag set before VM creation |
 | 6 | `foundation/appframework/ability/ability_runtime/cross_platform/frameworks/native/jsruntime/src/js_runtime.cpp` | Check `OHOS_HAP_MODE` env var after VM creation | Wire env var → VM flag |
