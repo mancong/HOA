@@ -7,7 +7,7 @@ import ohos.stage.ability.adapter.StageActivity
 class HoaAbilityActivity : StageActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val bundleName = intent.getStringExtra("BUNDLE_NAME") ?: "app.hackeris.arkuixexample"
+        val bundleName = intent.getStringExtra("BUNDLE_NAME") ?: "app.hackeris.harmonyexample"
         val moduleName = intent.getStringExtra("MODULE_NAME") ?: "entry"
         val abilityName = intent.getStringExtra("ABILITY_NAME") ?: "EntryAbility"
 
