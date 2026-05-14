@@ -92,10 +92,21 @@ class HapInstaller(private val context: Context) {
     }
 
     private fun writePkgContextInfo(targetDir: File, fullModuleName: String, moduleType: String) {
+        // OHOS-format pkgContextInfo.json expected by js_runtime.cpp::ParsePkgContextInfoJson.
+        // Top-level key = module short name, value = {packageName, bundleName, moduleName, version, entryPath, isSO, dependencyAlias}
+        val lastDot = fullModuleName.lastIndexOf('.')
+        val shortName = if (lastDot >= 0) fullModuleName.substring(lastDot + 1) else fullModuleName
+        val bundleName = if (lastDot >= 0) fullModuleName.substring(0, lastDot) else ""
         val json = JSONObject().apply {
-            put("moduleName", fullModuleName)
-            put("moduleType", moduleType)
-            put("isEsModule", true)
+            put(shortName, JSONObject().apply {
+                put("packageName", shortName)
+                put("bundleName", bundleName)
+                put("moduleName", fullModuleName)
+                put("version", "")
+                put("entryPath", "src/main/")
+                put("isSO", false)
+                put("dependencyAlias", "")
+            })
         }
         File(targetDir, "pkgContextInfo.json").writeText(json.toString())
     }

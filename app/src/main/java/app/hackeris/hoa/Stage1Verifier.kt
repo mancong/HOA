@@ -36,8 +36,8 @@ object Stage1Verifier {
 
         Log.e(TAG, "===== Stage 1 Verification: $passed/$total PASSED =====")
         if (failed.isNotEmpty()) {
-            Log.w(TAG, "Failed checks:")
-            failed.forEach { Log.w(TAG, "  FAIL: ${it.name} — ${it.detail}") }
+            Log.e(TAG, "Failed checks:")
+            failed.forEach { Log.e(TAG, "  FAIL: ${it.name} — ${it.detail}") }
         }
 
         return results
