@@ -9,7 +9,7 @@
 #   ./scripts/sync_arkui_x.sh --dry-run          # 预览但不实际复制
 #
 # 依赖:
-#   - ArkUI-X 构建产物目录 (默认: hoa2/arkui-x/out/arkui-x/aosp_clang_arm64_release/)
+#   - ArkUI-X 构建产物目录 (默认: <arkui-x-src>/out/arkui-x/aosp_clang_arm64_release/)
 #   - 项目根目录 (默认: 脚本所在目录的上级)
 
 set -euo pipefail
