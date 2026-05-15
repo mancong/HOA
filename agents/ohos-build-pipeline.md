@@ -4,7 +4,7 @@
 
 ### 开发态 → 编译态
 
-**参考**: `OHOS 源码 docs/zh-cn/application-dev/quick-start/application-package-structure-stage.md`
+**参考**: OHOS 源码 `docs/zh-cn/application-dev/quick-start/application-package-structure-stage.md`
 
 | 阶段 | 文件 | 说明 |
 |------|------|------|
@@ -63,7 +63,7 @@ OHOS HAP 的 ABC 中 record 名使用完整的**构建时源文件路径**:
 
 ## ArkCompiler 架构
 
-**参考**: `OHOS 源码 docs/zh-cn/readme/ARK-Runtime-Subsystem-zh.md`
+**参考**: OHOS 源码 `docs/zh-cn/readme/ARK-Runtime-Subsystem-zh.md`
 
 ### 四个子系统
 

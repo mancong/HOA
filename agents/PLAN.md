@@ -11,8 +11,8 @@
 - **阻塞点集中在模块入口路由和 record 名格式适配两个窄点**，不需要重写整个运行时
 - ArkUI-X 已内置 HapParser + minizip，HAP ZIP 读取和 resources.index 解析能力已具备
 
-**参考源码**: `OHOS 源码 ` (OHOS 源码)、`ArkUI-X 源码 ` (ArkUI-X 源码)
-**技术调研文档**: hoa2 文档集 (完整分析文档集)
+**参考源码**: OHOS 源码、ArkUI-X 源码
+**技术调研文档**: agents/ 目录 (完整分析文档集)
 
 ---
 
@@ -113,7 +113,7 @@ Phase 1-2 已验证:
 | ETS VM 创建 | 已验证 — `ark::ets::CreateRuntime()` 成功 |
 | 入口点调用 | **不可行** — `ExecutePandaFile(func_main_0)` 不是正确的模块加载方式 |
 
-Phase 4 研究（hoa2 文档集）已完成:
+Phase 4 研究（详见 agents/ 目录下的技术调研文档）已完成:
 - srcEntry → entryPoint 完整转换链（OHOS + ArkUI-X 双向逐行追踪）
 - JNI 桥接层完整分析（两个 JNI 渠道、LoadModule/DispatchOnCreate 双路径）
 - NAPI 模块注册与注入机制
@@ -272,7 +272,7 @@ ArkUI-X 已内置 `HapParser` + minizip，无需从零构建。已有能力:
 
 **具体步骤**:
 1. 从 ArkUI-X 的 build.sh 提取 Android target 的 GN/CMake 参数
-2. 将编译目标指向 `OHOS 源码 arkcompiler/` 和 `OHOS 源码 foundation/arkui/`（而非 ArkUI-X 的 fork）
+2. 将编译目标指向 OHOS 源码 `arkcompiler/` 和 OHOS 源码 `foundation/arkui/`（而非 ArkUI-X 的 fork）
 3. 应用上述 3 个 Patch 到 ets_runtime 源码
 4. 添加 OHOS NAPI stub 模块到构建
 5. 编译 arm64-v8a 目标

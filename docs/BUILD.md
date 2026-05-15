@@ -23,7 +23,7 @@ Output: `app/build/outputs/apk/debug/app-debug.apk` (~85 MB, 5 native libraries)
 |------|---------|-------|
 | Gradle | 8.x (wrapper) | `./gradlew --version` |
 
-The ArkUI-X build (step 1) requires its own prerequisites (GN, Ninja, Clang, etc.) — refer to ArkUI-X 源码 documentation for details. The `sync_arkui_x.sh` script handles bringing all compiled artifacts into the HOA project.
+The ArkUI-X build (step 1) requires its own prerequisites (GN, Ninja, Clang, etc.) — refer to the ArkUI-X source tree documentation for details. The `sync_arkui_x.sh` script handles bringing all compiled artifacts into the HOA project.
 
 ## Build output (native libraries)
 

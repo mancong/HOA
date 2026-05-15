@@ -1,6 +1,6 @@
 # ArkUI-X 构建系统详解
 
-**参考**: `ArkUI-X 源码 docs/zh-cn/framework-dev/quick-start/start-with-build.md`、`project-structure-guide.md`
+**参考**: ArkUI-X 源码 `docs/zh-cn/framework-dev/quick-start/start-with-build.md`、`project-structure-guide.md`
 
 ## 构建命令
 

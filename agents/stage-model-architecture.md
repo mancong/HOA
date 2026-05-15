@@ -2,7 +2,7 @@
 
 ## 核心概念
 
-**参考**: `OHOS 源码 docs/zh-cn/application-dev/application-models/stage-model-development-overview.md`
+**参考**: OHOS 源码 `docs/zh-cn/application-dev/application-models/stage-model-development-overview.md`
 
 ### 关键设计: 共享 ArkTS 引擎
 

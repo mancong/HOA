@@ -1,10 +1,10 @@
 # libarkui_android.so 构建内容分析
 
-**源码路径**: `ArkUI-X 源码 `
+**源码路径**: ArkUI-X 源码
 
 ## 构建入口
 
-**GN 目标**: `ArkUI-X 源码 foundation/arkui/ace_engine/adapter/android/build/BUILD.gn` (line 26)
+**GN 目标**: ArkUI-X 源码 `foundation/arkui/ace_engine/adapter/android/build/BUILD.gn` (line 26)
 
 ```gn
 ohos_shared_library("libarkui_android") {
@@ -113,7 +113,7 @@ ace_napi (ohos_static_library)
 
 ## 四级：AppFramework NAPIs
 
-**文件**：`ArkUI-X 源码 foundation/appframework/BUILD.gn`
+**文件**：ArkUI-X 源码 `foundation/appframework/BUILD.gn`
 
 `appframework_napis` 是一个 group，包含：
 

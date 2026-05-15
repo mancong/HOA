@@ -9,7 +9,7 @@
 - ArkUI-X 已经实现完整的 Android 渲染管线（SurfaceView + Virtual Rosen + Skia）
 - **Stage 模型关键设计**: 多个应用组件共享**一个** ArkTS 引擎实例（ArkCompiler eTS Runtime），Android 端只需一个 EcmaVM
 - 阻塞点集中在 **模块入口路由** 和 **record 名格式适配** 两个窄点，不需要重写整个运行时
-- 参考文档: `OHOS 源码 docs/zh-cn/` (OHOS Stage模型、模块配置、ArkCompiler)、`ArkUI-X 源码 docs/zh-cn/` (Android集成指南、平台差异化)
+- 参考文档: OHOS 源码 `docs/zh-cn/` (OHOS Stage模型、模块配置、ArkCompiler)、ArkUI-X 源码 `docs/zh-cn/` (Android集成指南、平台差异化)
 
 ## 二、核心阻塞点分析
 
@@ -204,13 +204,13 @@ if (!vm->IsOhosHapMode() && !vm->IsNormalizedOhmUrlPack() && !jsPandaFile->IsBun
 
 ```
 构建输入:
-├── OHOS 源码 arkcompiler/ets_runtime/    (与 ArkUI-X 指向同一份代码 ← 关键)
-├── OHOS 源码 arkcompiler/runtime_core/   (同一份)
-├── OHOS 源码 foundation/arkui/ace_engine/ (同一份)
-├── ArkUI-X 源码 foundation/arkui/ace_engine/adapter/android/ (Android 适配层，独立)
-├── ArkUI-X 源码 foundation/appframework/  (AppFramework 跨平台适配层，独立)
-├── OHOS 源码 base/global/resource_management/ (同一份)
-├── OHOS 源码 third_party/ (Skia, ICU, libpng, freetype...)
+├── arkcompiler/ets_runtime/    (OHOS 源码，与 ArkUI-X 指向同一份代码)
+├── arkcompiler/runtime_core/   (OHOS 源码，同一份)
+├── foundation/arkui/ace_engine/ (OHOS 源码，同一份)
+├── foundation/arkui/ace_engine/adapter/android/ (ArkUI-X 源码，Android 适配层)
+├── foundation/appframework/  (ArkUI-X 源码，AppFramework 跨平台适配层)
+├── base/global/resource_management/ (OHOS 源码，同一份)
+├── third_party/ (OHOS 源码，Skia, ICU, libpng, freetype...)
 └── 新增: OHOS NAPI stubs
 
 构建输出:
@@ -219,7 +219,7 @@ if (!vm->IsOhosHapMode() && !vm->IsNormalizedOhmUrlPack() && !jsPandaFile->IsBun
 
 **具体步骤**:
 1. 从 ArkUI-X 的 build.sh 提取 Android target 的 GN/CMake 参数
-2. 将编译目标指向 `OHOS 源码 arkcompiler/` 和 `OHOS 源码 foundation/arkui/`（而非 ArkUI-X 的 fork）
+2. 将编译目标指向 OHOS 源码 `arkcompiler/` 和 OHOS 源码 `foundation/arkui/`（而非 ArkUI-X 的 fork）
 3. 应用上述 Patch 到对应文件
 4. 添加 OHOS NAPI stub 模块到构建
 5. 编译 arm64-v8a 目标
@@ -316,7 +316,7 @@ Window::SetUIContent
 
 ### Phase 1: 构建验证（预期 1-2 周）
 
-**目标**: 使用 `OHOS 源码 arkcompiler/` 源码 + ArkUI-X 构建脚本，成功编译出可在 Android 上加载的 libohos_android.so
+**目标**: 使用 OHOS 源码 `arkcompiler/` 源码 + ArkUI-X 构建脚本，成功编译出可在 Android 上加载的 libohos_android.so
 
 **关键任务**:
 1. 提取 ArkUI-X build.sh 中 Android target 的编译参数

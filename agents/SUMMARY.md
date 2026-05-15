@@ -6,8 +6,8 @@
 
 ## 参考源码
 
-- ArkUI-X: `ArkUI-X 源码 ` (build.sh at root)
-- OpenHarmony: `OHOS 源码 `
+- ArkUI-X: ArkUI-X 源码 (build.sh at root)
+- OpenHarmony: OHOS 源码
 
 ---
 

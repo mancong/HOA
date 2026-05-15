@@ -53,20 +53,20 @@ app-release.apk
 
 | 组件 | 路径 |
 |------|------|
-| 构建脚本 | `ArkUI-X 源码 build.sh` |
-| Android 平台适配 | `ArkUI-X 源码 foundation/arkui/ace_engine/adapter/android/` |
+| 构建脚本 | ArkUI-X 源码 `build.sh` |
+| Android 平台适配 | ArkUI-X 源码 `foundation/arkui/ace_engine/adapter/android/` |
 | Stage Java 层 | `.../adapter/android/stage/ability/java/src/` |
 | Stage JNI 层 | `.../adapter/android/stage/ability/java/jni/` |
 | ACE Android 入口 | `.../adapter/android/entrance/java/` |
-| AppFramework (跨平台) | `ArkUI-X 源码 foundation/appframework/` |
-| JsRuntime (跨平台) | `ArkUI-X 源码 foundation/appframework/ability/ability_runtime/cross_platform/frameworks/native/jsruntime/` |
-| OHOS 原始实现 | `OHOS 源码 foundation/ability/ability_runtime/` |
-| ArkCompiler | `OHOS 源码 arkcompiler/ets_runtime/` |
+| AppFramework (跨平台) | ArkUI-X 源码 `foundation/appframework/` |
+| JsRuntime (跨平台) | ArkUI-X 源码 `foundation/appframework/ability/ability_runtime/cross_platform/frameworks/native/jsruntime/` |
+| OHOS 原始实现 | OHOS 源码 `foundation/ability/ability_runtime/` |
+| ArkCompiler | OHOS 源码 `arkcompiler/ets_runtime/` |
 
 ## 编译内容
 
 ### ACE 引擎 (ArkUI)
-- `ArkUI-X 源码 foundation/arkui/ace_engine/` — 声明式 UI 框架核心
+- ArkUI-X 源码 `foundation/arkui/ace_engine/` — 声明式 UI 框架核心
 - Android 适配层：`adapter/android/` 包含 StageActivity、WindowView、SurfaceView 渲染
 
 ### NAPI 桥接

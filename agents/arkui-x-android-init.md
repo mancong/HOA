@@ -4,7 +4,7 @@
 
 ### Phase 0: 库加载 (JNI_OnLoad)
 
-**文件**: `ArkUI-X 源码 foundation/arkui/ace_engine/adapter/android/entrance/java/jni/jni_load.cpp`
+**文件**: ArkUI-X 源码 `foundation/arkui/ace_engine/adapter/android/entrance/java/jni/jni_load.cpp`
 
 `System.loadLibrary("arkui_android")` 触发 JNI_OnLoad:
 1. 初始化 `JniEnvironment` (包装 JavaVM 指针)
@@ -37,7 +37,7 @@
 
 ### Phase 2: ScheduleLaunchApplication (C++)
 
-**文件**: `ArkUI-X 源码 foundation/appframework/ability/ability_runtime/cross_platform/frameworks/native/app/app_main.cpp`
+**文件**: ArkUI-X 源码 `foundation/appframework/ability/ability_runtime/cross_platform/frameworks/native/app/app_main.cpp`
 
 `LaunchApplication` JNI handler 发送到事件处理器 → `ScheduleLaunchApplication`:
 
@@ -50,7 +50,7 @@
 
 ### Phase 3: JsRuntime / EcmaVM 创建
 
-**文件**: `ArkUI-X 源码 foundation/appframework/ability/ability_runtime/cross_platform/frameworks/native/jsruntime/src/runtime.cpp`
+**文件**: ArkUI-X 源码 `foundation/appframework/ability/ability_runtime/cross_platform/frameworks/native/jsruntime/src/runtime.cpp`
 
 `ArkJsRuntime::Initialize`:
 
