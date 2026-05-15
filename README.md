@@ -35,10 +35,10 @@ HOA 基于 ArkUI-X 的 Android 构建体系，通过 4 个定向 Patch 使运行
 ## 构建
 
 ```bash
-cd /data/share/hoa2/arkui-x
+cd <arkui-x-source>
 ./build.sh --product-name arkui-x --target-os android
 
-cd /path/to/HOA
+cd <hoa-project>
 ./scripts/sync_arkui_x.sh
 ./gradlew assembleDebug
 ```

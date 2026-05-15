@@ -1,6 +1,6 @@
 # ArkUI-X 源码修改说明
 
-> 源码根目录: `/data/share/hoa2/arkui-x/`（repo 管理，含多个独立 git 仓库）
+> 源码根目录: ArkUI-X 源码（repo 管理，含多个独立 git 仓库）
 >
 > 目标: 使 ArkUI-X 的 Android 运行时能够加载并执行 OHOS 原生格式的 HAP
 
@@ -81,7 +81,7 @@ HoaApplication.kt
 
 ## 调用方 (HOA 项目)
 
-在 `/src/HOA/app/src/main/java/app/hackeris/hoa/HoaApplication.kt` 中：
+在 HOA 项目的 `HoaApplication.kt` 中：
 
 ```kotlin
 override fun onCreate() {

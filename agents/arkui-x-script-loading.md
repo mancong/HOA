@@ -5,7 +5,7 @@
 ArkUI-X 是 OpenHarmony 的跨平台移植版本，其 Android APK 包含完整的 NAPI/EcmaVM 运行时，
 打包为单个巨型共享库 `libarkui_android.so`（~95MB arm64-v8a）。
 
-源码位置: `/src/arkui-x`
+源码位置: ArkUI-X 源码
 
 ## 1. 完整调用链 (6 层)
 

@@ -20,8 +20,8 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
-# ArkUI-X 构建产物根目录 — 按你的环境修改
-ARKUI_BUILD="${ARKUI_BUILD:-/data/share/hoa2/arkui-x/out/arkui-x/aosp_clang_arm64_release}"
+# ArkUI-X 构建产物根目录 — 需指向实际环境中的 <arkui-x-source>/out/.../aosp_clang_arm64_release
+ARKUI_BUILD="${ARKUI_BUILD:-}"
 
 # HOA 项目目标子目录
 JNILIBS_DIR="$PROJECT_ROOT/app/src/main/jniLibs/arm64-v8a"
@@ -57,8 +57,7 @@ for arg in "$@"; do
             echo "  --dry-run      预览，不实际复制"
             echo ""
             echo "环境变量:"
-            echo "  ARKUI_BUILD    ArkUI-X 构建产物根目录"
-            echo "                 (默认: /data/share/hoa2/arkui-x/out/arkui-x/aosp_clang_arm64_release)"
+            echo "  ARKUI_BUILD    ArkUI-X 构建产物根目录（必须设置）"
             exit 0
             ;;
         *)

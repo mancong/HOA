@@ -40,7 +40,7 @@ module.json5: srcEntry = "./ets/entryability/EntryAbility.ets"
 
 ### Step 1: 源码位置
 
-`/src/ohos/foundation/ability/ability_runtime/frameworks/native/ability/native/ability_runtime/js_ability.cpp`
+`OHOS 源码 foundation/ability/ability_runtime/frameworks/native/ability/native/ability_runtime/js_ability.cpp`
 
 ### Step 2: GenerateSrcPath（行 151-177）
 
@@ -74,7 +74,7 @@ jsAbilityObj_ = jsRuntime_.LoadModule(
 
 ### Step 4: JsRuntime::LoadModule 构造 fileName（行 1055-1058）
 
-`/src/ohos/foundation/ability/ability_runtime/frameworks/native/runtime/js_runtime.cpp`
+`OHOS 源码 foundation/ability/ability_runtime/frameworks/native/runtime/js_runtime.cpp`
 
 ```cpp
 // hapPath 非空:
@@ -109,7 +109,7 @@ func(path, srcPath);  // modulePath=modules.abc路径, abcPath=fileName
 
 ### Step 6: ExecuteModuleBuffer → ParseAbcPathAndOhmUrl
 
-`/src/ohos/arkcompiler/ets_runtime/ecmascript/jspandafile/js_pandafile_executor.cpp:180-233`
+`OHOS 源码 arkcompiler/ets_runtime/ecmascript/jspandafile/js_pandafile_executor.cpp:180-233`
 
 ```cpp
 name = vm->GetAssetPath();  // "/data/storage/el1/bundle/entry/ets/modules.abc"
@@ -182,7 +182,7 @@ jsPandaFile->CheckAndGetRecordInfo("ets/entryability/EntryAbility", &recordInfo)
 
 ### Step 1: 源码位置
 
-`/src/arkui-x/foundation/appframework/ability/ability_runtime/cross_platform/frameworks/native/ability/js_ability.cpp`
+`ArkUI-X 源码 foundation/appframework/ability/ability_runtime/cross_platform/frameworks/native/ability/js_ability.cpp`
 
 ### Step 2: JsAbility::Init（行 68-98）
 
@@ -213,7 +213,7 @@ jsAbilityObj_ = jsRuntime_.LoadModule(
 
 ### Step 4: LoadModule 构造 fileName（行 550-560）
 
-`/src/arkui-x/foundation/appframework/ability/ability_runtime/cross_platform/frameworks/native/jsruntime/src/js_runtime.cpp`
+`ArkUI-X 源码 foundation/appframework/ability/ability_runtime/cross_platform/frameworks/native/jsruntime/src/js_runtime.cpp`
 
 ```cpp
 // ES module 分支:
@@ -243,7 +243,7 @@ bool result = engine->RunScriptBuffer(path.c_str(), buffer, false, needUpdate) !
 
 ### Step 6: ExecuteModuleBuffer → ParseAbcPathAndOhmUrl
 
-`/src/arkui-x/arkcompiler/ets_runtime/ecmascript/jspandafile/js_pandafile_executor.cpp:153-192`
+`ArkUI-X 源码 arkcompiler/ets_runtime/ecmascript/jspandafile/js_pandafile_executor.cpp:153-192`
 
 ```cpp
 name = GetAssetPath(vm);  // "/data/storage/el1/bundle/entry/ets/modules.abc"

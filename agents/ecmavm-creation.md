@@ -35,7 +35,7 @@ jsEnv_->Initialize(pandaOption, this);
 
 ### ArkUI-X Android 路径: ArkJsRuntime::Initialize
 
-**文件**: `/src/arkui-x/.../jsruntime/src/runtime.cpp` (行 207-279)
+**文件**: `ArkUI-X 源码 .../jsruntime/src/runtime.cpp` (行 207-279)
 
 ```cpp
 // 行 207-229: 配置 panda::RuntimeOption
@@ -130,7 +130,7 @@ JsRuntime::PreloadAce(options) {
 ```
 
 **文件**: `declarative_module_preloader.cpp:42`
-(`/src/ohos/foundation/arkui/ace_engine/interfaces/inner_api/ace/`)
+(`OHOS 源码 foundation/arkui/ace_engine/interfaces/inner_api/ace/`)
 
 ### ArkUI-X PreloadAce
 

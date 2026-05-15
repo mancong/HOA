@@ -15,13 +15,13 @@ ArkCompiler eTS Runtime 在加载 ABC 字节码时，有两种互斥的运行模
 
 ### 第 1 层：运行时标志 `isBundle_` — 由 module.json5 的 compileMode 决定
 
-**OHOS** — `/src/ohos/foundation/ability/ability_runtime/frameworks/native/appkit/app/main_thread.cpp:1473`:
+**OHOS** — `OHOS 源码 foundation/ability/ability_runtime/frameworks/native/appkit/app/main_thread.cpp:1473`:
 
 ```cpp
 options.isBundle = (entryHapModuleInfo.compileMode != AppExecFwk::CompileMode::ES_MODULE);
 ```
 
-**ArkUI-X** — `/src/arkui-x/foundation/appframework/ability/ability_runtime/cross_platform/frameworks/native/app/app_main.cpp:261-262`:
+**ArkUI-X** — `ArkUI-X 源码 foundation/appframework/ability/ability_runtime/cross_platform/frameworks/native/app/app_main.cpp:261-262`:
 
 ```cpp
 CreateRuntime(applicationInfo->bundleName,
@@ -42,7 +42,7 @@ main_thread.cpp / app_main.cpp
 
 ### 第 2 层：ABC 文件标志 `isBundlePack_` — 从二进制结构自动检测
 
-**源码** — `/src/ohos/arkcompiler/ets_runtime/ecmascript/jspandafile/js_pandafile.cpp:45-66`:
+**源码** — `OHOS 源码 arkcompiler/ets_runtime/ecmascript/jspandafile/js_pandafile.cpp:45-66`:
 
 ```cpp
 void JSPandaFile::CheckIsBundlePack()

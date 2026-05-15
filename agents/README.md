@@ -38,6 +38,6 @@ ArkUI-X 和 OpenHarmony 共享同一份 arkcompiler 和 ace_engine 核心代码�
 
 ## 参考源码
 
-- ArkUI-X: `/src/arkui-x/`
-- OpenHarmony: `/src/ohos/`
-- 官方文档: `/src/arkui-x/docs/zh-cn/`、`/src/ohos/docs/zh-cn/`
+- ArkUI-X: `ArkUI-X 源码 `
+- OpenHarmony: `OHOS 源码 `
+- 官方文档: `ArkUI-X 源码 docs/zh-cn/`、`OHOS 源码 docs/zh-cn/`

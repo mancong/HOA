@@ -4,8 +4,8 @@
 # Usage: ./scripts/setup-runtime.sh [ARKUIX_SAMPLE_DIR] [ARKUIX_SRC_DIR]
 #
 # Arguments:
-#   ARKUIX_SAMPLE_DIR  Path to ArkUI-X example project (default: /data/share/arkui-x-example)
-#   ARKUIX_SRC_DIR     Path to ArkUI-X source tree (default: /src/arkui-x)
+#   ARKUIX_SAMPLE_DIR  Path to ArkUI-X example project (required)
+#   ARKUIX_SRC_DIR     Path to ArkUI-X source tree (required)
 #
 # This script copies:
 #   1. Pre-built .so native libraries (arm64-v8a)
@@ -20,8 +20,8 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
-ARKUIX_SAMPLE_DIR="${1:-/data/share/arkui-x-example}"
-ARKUIX_SRC_DIR="${2:-/src/arkui-x}"
+ARKUIX_SAMPLE_DIR="${1:-}"
+ARKUIX_SRC_DIR="${2:-}"
 
 echo "=== HOA Runtime Setup ==="
 echo "Project:    $PROJECT_DIR"

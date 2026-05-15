@@ -6,7 +6,7 @@ OpenHarmony 原生执行 HAP 中的 ETS 字节码并非简单地调用 `ExecuteM
 实际流程涉及多个层次：appspawn 进程孵化 → ability_runtime 框架初始化 → JsRuntime 创建 VM
 → arkcompiler_ets_runtime (napi/ecmascript 层) 加载和执行模块。
 
-源码位置: `/src/ohos`
+源码位置: OHOS 源码
 
 ## 1. 完整调用链 (8 阶段)
 

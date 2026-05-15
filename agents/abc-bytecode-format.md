@@ -1,6 +1,6 @@
 # ABC 字节码格式与 VM 执行原理
 
-**参考**: `/src/HOA/ark_bytecode_analysis.md`
+**参考**: 项目内 `ark_bytecode_analysis.md`
 
 ## 1. 文件格式
 

@@ -70,11 +70,11 @@ bundleName="app" 和 moduleName="hackeris.harmonyexample.entry"。
 
 ```bash
 # ArkUI-X 原生构建
-cd /data/share/hoa2/arkui-x
+cd <arkui-x-source>
 ./build.sh --product-name arkui-x --target-os android
 
 # 产物同步到 HOA 项目
-cd /path/to/HOA
+cd <hoa-project>
 ./scripts/sync_arkui_x.sh
 
 # APK 打包
@@ -89,11 +89,11 @@ cd /path/to/HOA
 
 ```bash
 # ArkUI-X 原生构建
-cd /data/share/hoa2/arkui-x
+cd <arkui-x-source>
 ./build.sh --product-name arkui-x --target-os android
 
 # 产物同步到 HOA 项目
-cd /path/to/HOA
+cd <hoa-project>
 ./scripts/sync_arkui_x.sh
 
 # APK 打包

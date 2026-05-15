@@ -4,11 +4,11 @@
 
 ```bash
 # 1. Build ArkUI-X for Android (~30 min, 700MB+ output)
-cd /data/share/hoa2/arkui-x
+cd <arkui-x-source>
 ./build.sh --product-name arkui-x --target-os android
 
 # 2. Copy all outputs into HOA project
-cd /path/to/HOA
+cd <hoa-project>
 ./scripts/sync_arkui_x.sh
 
 # 3. Build APK
@@ -23,7 +23,7 @@ Output: `app/build/outputs/apk/debug/app-debug.apk` (~85 MB, 5 native libraries)
 |------|---------|-------|
 | Gradle | 8.x (wrapper) | `./gradlew --version` |
 
-The ArkUI-X build (step 1) requires its own prerequisites (GN, Ninja, Clang, etc.) — refer to `/data/share/hoa2/arkui-x/` documentation for details. The `sync_arkui_x.sh` script handles bringing all compiled artifacts into the HOA project.
+The ArkUI-X build (step 1) requires its own prerequisites (GN, Ninja, Clang, etc.) — refer to ArkUI-X 源码 documentation for details. The `sync_arkui_x.sh` script handles bringing all compiled artifacts into the HOA project.
 
 ## Build output (native libraries)
 
@@ -107,9 +107,9 @@ ARKUI_BUILD=/custom/path/out/.../aosp_clang_arm64_release ./scripts/sync_arkui_x
 
 ```bash
 # 修改了 ArkUI-X 的 C++ 代码后：
-cd /data/share/hoa2/arkui-x
+cd <arkui-x-source>
 ./build.sh --product-name arkui-x --target-os android
-cd /path/to/HOA
+cd <hoa-project>
 ./scripts/sync_arkui_x.sh --so-only    # 仅更新变化的 .so
 ./gradlew assembleDebug                # 重新打包 APK
 adb install -r app/build/outputs/apk/debug/app-debug.apk
