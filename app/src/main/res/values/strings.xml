@@ -1,3 +1,46 @@
 <resources>
     <string name="app_name">HOA</string>
+    <string name="devtest_label">HOA Dev Test</string>
+
+    <!-- MainActivity -->
+    <string name="section_installed_haps">Installed HAPs</string>
+    <string name="hint_no_haps">No HAPs installed yet.\nTap below to install one.</string>
+    <string name="btn_install_hap">Install HAP</string>
+    <string name="btn_installing">Installing…</string>
+    <string name="runtime_ok">OK</string>
+    <string name="runtime_incomplete">INCOMPLETE</string>
+    <string name="runtime_status_fmt">Runtime: %1$s  |  ABI: %2$s</string>
+    <string name="toast_installed_fmt">Installed: %1$s</string>
+    <string name="toast_install_failed_fmt">Install failed: %1$s</string>
+    <string name="toast_uninstalled_fmt">Uninstalled: %1$s</string>
+    <string name="dialog_no_slots_title">No available slots</string>
+    <string name="dialog_no_slots_msg">All %1$d process slots are in use. Close a running HAP before launching another.</string>
+    <string name="dialog_uninstall_title">Uninstall HAP</string>
+    <string name="dialog_uninstall_msg">Remove %1$s/%2$s?</string>
+    <string name="btn_uninstall">Uninstall</string>
+    <string name="label_no_ability">No ability</string>
+    <string name="label_ability_fmt">Ability: %1$s</string>
+
+    <!-- DevTestActivity -->
+    <string name="btn_auto_mode">AUTO MODE</string>
+    <string name="btn_extracting">Extracting…</string>
+    <string name="btn_extract_hap">Extract Test HAP from Assets</string>
+    <string name="btn_re_extract">Re-extract Test HAP from Assets</string>
+    <string name="btn_launch_test_hap">Launch Test HAP</string>
+    <string name="label_checking">Checking…</string>
+    <string name="toast_extracted">Test HAP extracted</string>
+    <string name="toast_extract_failed">Extraction failed</string>
+    <string name="toast_error_fmt">Error: %1$s</string>
+    <string name="toast_auto_launching">Auto: launching…</string>
+    <string name="toast_auto_extract_failed">Auto: extract FAILED</string>
+    <string name="toast_auto_error_fmt">Auto: error — %1$s</string>
+    <string name="toast_slots_full_fmt">All %1$d process slots in use</string>
+    <string name="devtest_status_ready_fmt">Test HAP: READY\nmodules.abc: %1$d bytes</string>
+    <string name="devtest_status_not_extracted">Test HAP: NOT EXTRACTED</string>
+
+    <!-- HoaAbilityActivity -->
+    <string name="toast_module_not_found">Module not found: %1$s/%2$s</string>
+
+    <!-- item_hap -->
+    <string name="desc_hap_icon">HAP icon</string>
 </resources>

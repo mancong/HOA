@@ -30,13 +30,13 @@ class DevTestActivity : AppCompatActivity() {
 
         if (autoLaunch) {
             extractButton.isEnabled = false
-            extractButton.text = "AUTO MODE"
+            extractButton.text = getString(R.string.btn_auto_mode)
             Log.e(TAG, "Auto-launch mode, extracting and launching...")
             extractAndLaunch()
         } else {
             extractButton.setOnClickListener {
                 extractButton.isEnabled = false
-                extractButton.text = "Extracting..."
+                extractButton.text = getString(R.string.btn_extracting)
                 extractInBackground()
             }
             launchButton.setOnClickListener {
@@ -59,21 +59,21 @@ class DevTestActivity : AppCompatActivity() {
                 val ok = doExtract()
                 runOnUiThread {
                     if (ok) {
-                        Toast.makeText(this, "Test HAP extracted", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, getString(R.string.toast_extracted), Toast.LENGTH_SHORT).show()
                     } else {
-                        Toast.makeText(this, "Extraction failed", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this, getString(R.string.toast_extract_failed), Toast.LENGTH_LONG).show()
                     }
                     refreshStatus()
                     extractButton.isEnabled = true
-                    extractButton.text = "Re-extract Test HAP from Assets"
+                    extractButton.text = getString(R.string.btn_re_extract)
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Extract failed", e)
                 runOnUiThread {
-                    Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, getString(R.string.toast_error_fmt, e.message), Toast.LENGTH_LONG).show()
                     refreshStatus()
                     extractButton.isEnabled = true
-                    extractButton.text = "Extract Test HAP from Assets"
+                    extractButton.text = getString(R.string.btn_extract_hap)
                 }
             }
         }.start()
@@ -86,16 +86,16 @@ class DevTestActivity : AppCompatActivity() {
                 runOnUiThread {
                     refreshStatus()
                     if (ready) {
-                        Toast.makeText(this, "Auto: launching...", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, getString(R.string.toast_auto_launching), Toast.LENGTH_SHORT).show()
                         launchHap()
                     } else {
-                        Toast.makeText(this, "Auto: extract FAILED", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this, getString(R.string.toast_auto_extract_failed), Toast.LENGTH_LONG).show()
                     }
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Auto extract+launch failed", e)
                 runOnUiThread {
-                    Toast.makeText(this, "Auto: error — ${e.message}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, getString(R.string.toast_auto_error_fmt, e.message), Toast.LENGTH_LONG).show()
                 }
             }
         }.start()
@@ -118,7 +118,7 @@ class DevTestActivity : AppCompatActivity() {
     private fun launchHap() {
         val slot = ProcessSlotManager.allocateSlot(this)
         if (slot < 0) {
-            Toast.makeText(this, "All ${ProcessSlotManager.MAX_SLOTS} process slots in use", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, getString(R.string.toast_slots_full_fmt, ProcessSlotManager.MAX_SLOTS), Toast.LENGTH_LONG).show()
             Log.w(TAG, "All process slots occupied")
             return
         }
@@ -139,10 +139,10 @@ class DevTestActivity : AppCompatActivity() {
         if (ready) {
             val modulesAbc = File(filesDir, "hap/app.hackeris.harmonyexample.entry/ets/modules.abc")
             val abcSize = if (modulesAbc.exists()) modulesAbc.length() else 0
-            statusText.text = "Test HAP: READY\nmodules.abc: $abcSize bytes"
+            statusText.text = getString(R.string.devtest_status_ready_fmt, abcSize)
             launchButton.isEnabled = true
         } else {
-            statusText.text = "Test HAP: NOT EXTRACTED"
+            statusText.text = getString(R.string.devtest_status_not_extracted)
             launchButton.isEnabled = false
         }
     }

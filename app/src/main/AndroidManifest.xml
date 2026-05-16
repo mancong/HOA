@@ -60,7 +60,7 @@
         <activity
             android:name=".DevTestActivity"
             android:exported="true"
-            android:label="HOA Dev Test" />
+            android:label="@string/devtest_label" />
 
         <activity
             android:name=".HoaAbilityActivity0"

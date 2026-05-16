@@ -97,8 +97,8 @@ class MainActivity : AppCompatActivity() {
             java.io.File(nativeLibDir, lib).exists()
         }
 
-        val runtime = if (allLibsPresent) "OK" else "INCOMPLETE"
-        runtimeStatus.text = "Runtime: $runtime  |  ABI: ${android.os.Build.SUPPORTED_ABIS.firstOrNull()}"
+        val runtime = if (allLibsPresent) getString(R.string.runtime_ok) else getString(R.string.runtime_incomplete)
+        runtimeStatus.text = getString(R.string.runtime_status_fmt, runtime, android.os.Build.SUPPORTED_ABIS.firstOrNull())
     }
 
     private fun refreshHapList() {
@@ -133,7 +133,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun installHapFromUri(uri: Uri) {
         installButton.isEnabled = false
-        installButton.text = "Installing..."
+        installButton.text = getString(R.string.btn_installing)
 
         Thread {
             try {
@@ -142,18 +142,18 @@ class MainActivity : AppCompatActivity() {
                 } ?: throw IllegalStateException("Cannot open selected file")
 
                 runOnUiThread {
-                    Toast.makeText(this, "Installed: ${result.bundleName}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.toast_installed_fmt, result.bundleName), Toast.LENGTH_SHORT).show()
                     refreshHapList()
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "HAP install failed", e)
                 runOnUiThread {
-                    Toast.makeText(this, "Install failed: ${e.message}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, getString(R.string.toast_install_failed_fmt, e.message), Toast.LENGTH_LONG).show()
                 }
             } finally {
                 runOnUiThread {
                     installButton.isEnabled = true
-                    installButton.text = "Install HAP"
+                    installButton.text = getString(R.string.btn_install_hap)
                 }
             }
         }.start()
@@ -163,9 +163,9 @@ class MainActivity : AppCompatActivity() {
         val slot = ProcessSlotManager.allocateSlot(this)
         if (slot < 0) {
             AlertDialog.Builder(this)
-                .setTitle("No available slots")
-                .setMessage("All ${ProcessSlotManager.MAX_SLOTS} process slots are in use. Close a running HAP before launching another.")
-                .setPositiveButton("OK", null)
+                .setTitle(getString(R.string.dialog_no_slots_title))
+                .setMessage(getString(R.string.dialog_no_slots_msg, ProcessSlotManager.MAX_SLOTS))
+                .setPositiveButton(android.R.string.ok, null)
                 .show()
             Log.w(TAG, "All ${ProcessSlotManager.MAX_SLOTS} process slots occupied")
             return
@@ -184,14 +184,14 @@ class MainActivity : AppCompatActivity() {
 
     private fun confirmUninstall(hap: InstalledHap) {
         AlertDialog.Builder(this)
-            .setTitle("Uninstall HAP")
-            .setMessage("Remove ${hap.bundleName}/${hap.moduleName}?")
-            .setPositiveButton("Uninstall") { _, _ ->
+            .setTitle(getString(R.string.dialog_uninstall_title))
+            .setMessage(getString(R.string.dialog_uninstall_msg, hap.bundleName, hap.moduleName))
+            .setPositiveButton(getString(R.string.btn_uninstall)) { _, _ ->
                 installer.uninstall(hap.bundleName)
                 refreshHapList()
-                Toast.makeText(this, "Uninstalled: ${hap.bundleName}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.toast_uninstalled_fmt, hap.bundleName), Toast.LENGTH_SHORT).show()
             }
-            .setNegativeButton("Cancel", null)
+            .setNegativeButton(android.R.string.cancel, null)
             .show()
     }
 
@@ -213,7 +213,7 @@ class MainActivity : AppCompatActivity() {
             view.findViewById<TextView>(R.id.hap_module_info).text =
                 "${hap.moduleName} | ${hap.moduleConfig.type} | v${hap.moduleConfig.versionName}"
             view.findViewById<TextView>(R.id.hap_ability_info).text =
-                if (hap.mainAbility.isNotBlank()) "Ability: ${hap.mainAbility}" else "No ability"
+                if (hap.mainAbility.isNotBlank()) getString(R.string.label_ability_fmt, hap.mainAbility) else getString(R.string.label_no_ability)
 
             val iconView = view.findViewById<android.widget.ImageView>(R.id.hap_icon)
             val cacheKey = "${hap.bundleName}.${hap.moduleName}"

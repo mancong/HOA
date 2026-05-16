@@ -39,7 +39,7 @@ open class HoaAbilityActivity : StageActivity() {
         if (!moduleExists(bundleName, moduleName)) {
             Log.e(TAG, "Module not found: bundleName=$bundleName, moduleName=$moduleName")
             Log.e(TAG, "  Checked: filesDir/hap/$bundleName.$moduleName/")
-            android.widget.Toast.makeText(this, "Module not found: $bundleName/$moduleName", android.widget.Toast.LENGTH_LONG).show()
+            android.widget.Toast.makeText(this, getString(R.string.toast_module_not_found, bundleName, moduleName), android.widget.Toast.LENGTH_LONG).show()
             finish()
             return
         }
