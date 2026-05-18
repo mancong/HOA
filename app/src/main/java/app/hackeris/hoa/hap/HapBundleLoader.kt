@@ -245,7 +245,7 @@ class HapBundleLoader {
             return result
         }
 
-        private fun parseStringFromIndex(moduleDir: java.io.File, targetKey: String): String? {
+        internal fun parseStringFromIndex(moduleDir: java.io.File, targetKey: String): String? {
             val indexFile = java.io.File(moduleDir, "resources.index")
             if (!indexFile.exists()) return null
             val data = try { indexFile.readBytes() } catch (_: Exception) { return null }

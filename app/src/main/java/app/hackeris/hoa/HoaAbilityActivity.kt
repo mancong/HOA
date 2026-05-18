@@ -146,6 +146,21 @@ open class HoaAbilityActivity : StageActivity() {
 
         try {
             val json = JSONObject(moduleJsonFile.readText())
+
+            // Prefer the app.label from module.json.
+            val appObj = json.optJSONObject("app")
+            val rawLabel = appObj?.optString("label", "") ?: ""
+            if (rawLabel.isNotBlank()) {
+                if (rawLabel.startsWith("\$string:")) {
+                    val key = rawLabel.removePrefix("\$string:")
+                    val moduleDir = File(filesDir, "hap/$fullModuleName")
+                    val resolved = app.hackeris.hoa.hap.HapBundleLoader.parseStringFromIndex(moduleDir, key)
+                    if (resolved != null) displayName = resolved
+                } else {
+                    displayName = rawLabel
+                }
+            }
+
             val moduleObj = json.getJSONObject("module")
             val abilities = moduleObj.optJSONArray("abilities")
             if (abilities != null) {
