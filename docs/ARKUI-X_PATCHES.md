@@ -24,8 +24,8 @@
 
 - `ecma_vm.h` — 新增标志位 `isOhosHapMode_` 及访问方法
 - `jsnapi_expo.cpp/.h` — 新增 `SetOhosHapMode` / `IsOhosHapMode` 全局 API
-- `module.cpp` — `GetOutEntryPoint` 在 OHOS 模式下插入 `src/main/` 并用 `&` 包裹输出（**最关键的修复**）
-- `module_path_helper.cpp` — `ParseAbcPathAndOhmUrl` / `ParseUrl` 新增 OHOS 分支
+- `module.cpp` — `GetOutEntryPoint` 在 OHOS 模式下插入 `src/main/` 并用 `&` 包裹输出；SDK 6.0 检测到后走 `bundleName/filename` 原生路径（**最关键的修复**）
+- `module_path_helper.cpp` — `ParseAbcPathAndOhmUrl` / `ParseUrl` 新增 OHOS 分支；`ParseAbcPathAndOhmUrl` 对 SDK 6.0 跳过 `TransformToNormalizedOhmUrl`
 - `js_pandafile_executor.cpp` — 跳过 `AdaptOldIsaRecord`（该函数会将去掉 bundleName 前缀的路径错误截断）
 
 ### 2. foundation/appframework（应用框架）
@@ -91,3 +91,71 @@ override fun onCreate() {
 ```
 
 测试入口已独立到 `DevTestActivity`，与生产主流程 `MainActivity` 分离。
+
+---
+
+## SDK 6.0 Record 名格式兼容（2026-05-18）
+
+### 背景
+
+OHOS SDK 5.0 和 6.0 的 ABC record 名格式不同：
+
+| 维度 | SDK 5.0 | SDK 6.0 |
+|------|---------|---------|
+| bundleName 前缀 | 无 | 有 (`liubai.yuedu.hos/entry/ets/...`) |
+| src/main/ 路径段 | 有 (`entry/src/main/ets/...`) | 无 (`entry/ets/...`) |
+| 归一化 URL 分隔符 | `&` 包裹 (`&...&`) | 无 |
+| 模块引用前缀 | `@normalized:` | `@bundle:` |
+
+`pkgContextInfoList_` 在两个版本中都会填充，`IsNormalizedOhmUrlPack()` 对两者都返回 true，因此 `GetOutEntryPoint` 无法区分版本。对 SDK 6.0 HAP 会误用 SDK 5.0 格式（加 `&` 分隔符 + 插入 `src/main/`），导致 record 查找失败。
+
+### 策略：格式检测，而非多重 fallback
+
+ArkUI-X 原生代码路径（non-ohm-url 分支）已经支持 SDK 6.0 的 `bundleName/entry/ets/...` 格式。SDK 6.0 格式和 ArkUI-X 原生格式一致——唯一的区别是多了 `IsNormalizedOhmUrlPack()` 返回 true，错误地将控制流导向了 SDK 5.0 的 `&` 包裹路径。
+
+**正确做法**：首次加载 ABC 时检测 record 名实际格式（SDK 5.0 以 `&` 开头，SDK 6.0 以 bundleName 开头），设置 `isOhosSdk6Format_` VM 标志位。之后的 `GetOutEntryPoint` 和 `ParseAbcPathAndOhmUrl` 据此选择正确路径。
+
+### 源码修改
+
+#### `ecma_vm.h` — 新增 `isOhosSdk6Format_` 标志位
+
+```cpp
+bool IsOhosSdk6Format() const { return isOhosSdk6Format_; }
+void SetIsOhosSdk6Format(bool value) { isOhosSdk6Format_ = value; }
+bool isOhosSdk6Format_ {false};
+```
+
+#### `js_pandafile.h` — 新增 `HasOhmUrlRecordFormat()`
+
+检测 ABC record 名是否使用 SDK 5.0 `&` 包裹格式（`jsRecordInfo_.begin()->first[0] == '&'`）。
+
+#### `module.cpp` — `GetOutEntryPoint` 条件收窄
+
+```cpp
+// 原: if (vm->IsNormalizedOhmUrlPack())
+// 改: if (vm->IsNormalizedOhmUrlPack() && !vm->IsOhosSdk6Format())
+```
+
+SDK 6.0 走 else 分支，输出 `bundleName/filename`（与 ArkUI-X 原生格式一致）。
+
+#### `module_path_helper.cpp` — `ParseAbcPathAndOhmUrl` 跳过归一化
+
+```cpp
+// 原: if (vm->IsNormalizedOhmUrlPack())
+// 改: if (vm->IsNormalizedOhmUrlPack() && !vm->IsOhosSdk6Format())
+```
+
+SDK 6.0 的 entry 不需要再经过 `TransformToNormalizedOhmUrl` 加 `&` 包裹。
+
+#### `js_pandafile_executor.cpp` — `ExecuteModuleBuffer` 格式检测 + 一次性 bootstrap retry
+
+首次加载 ABC 后调用 `HasOhmUrlRecordFormat()` 检测格式并设置标志位。由于 `GetOutEntryPoint` 在 ABC 加载前就已调用（此时标志位尚未设置），需要一次 bootstrap retry：若 record 查找失败且为 SDK 6.0，重新生成 entry 再查。
+
+之后的 `ExecuteFromFile`（页面路由）和 `GetExportObject`（JsAbility::Init）无需任何 fallback——标志位已设置，`GetOutEntryPoint` 直接输出正确格式。
+
+### 修复的 HAP
+
+留白阅读（`liubai.yuedu.hos`）SDK 6.0 格式 HAP：
+- ABC 版本 `12.0.6.0`，panda 版本 `0c.00.06.00`
+- record 名格式 `liubai.yuedu.hos/entry/ets/entryability/EntryAbility`
+- 模块引用前缀 `@bundle:`
