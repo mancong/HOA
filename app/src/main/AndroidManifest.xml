@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
 
     <application
         android:name=".HoaApplication"
@@ -63,6 +64,13 @@
             android:label="@string/devtest_label" />
 
         <activity
+            android:name=".HoaShortcutActivity"
+            android:exported="true"
+            android:taskAffinity=""
+            android:excludeFromRecents="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+        <activity
             android:name=".HoaAbilityActivity0"
             android:process=":hap0"
             android:exported="true"
@@ -93,6 +101,41 @@
         <activity
             android:name=".HoaAbilityActivity4"
             android:process=":hap4"
+            android:exported="true"
+            android:configChanges="orientation|keyboard|layoutDirection|screenSize|uiMode|smallestScreenSize|density"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+
+        <activity
+            android:name=".HoaAbilityActivity5"
+            android:process=":hap5"
+            android:exported="true"
+            android:configChanges="orientation|keyboard|layoutDirection|screenSize|uiMode|smallestScreenSize|density"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+
+        <activity
+            android:name=".HoaAbilityActivity6"
+            android:process=":hap6"
+            android:exported="true"
+            android:configChanges="orientation|keyboard|layoutDirection|screenSize|uiMode|smallestScreenSize|density"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+
+        <activity
+            android:name=".HoaAbilityActivity7"
+            android:process=":hap7"
+            android:exported="true"
+            android:configChanges="orientation|keyboard|layoutDirection|screenSize|uiMode|smallestScreenSize|density"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+
+        <activity
+            android:name=".HoaAbilityActivity8"
+            android:process=":hap8"
+            android:exported="true"
+            android:configChanges="orientation|keyboard|layoutDirection|screenSize|uiMode|smallestScreenSize|density"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+
+        <activity
+            android:name=".HoaAbilityActivity9"
+            android:process=":hap9"
             android:exported="true"
             android:configChanges="orientation|keyboard|layoutDirection|screenSize|uiMode|smallestScreenSize|density"
             android:windowSoftInputMode="adjustResize|stateHidden" />

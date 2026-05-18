@@ -2,6 +2,9 @@ package app.hackeris.hoa
 
 import android.app.AlertDialog
 import android.content.Intent
+import android.content.pm.ShortcutInfo
+import android.content.pm.ShortcutManager
+import android.graphics.drawable.Icon
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -278,6 +281,7 @@ class MainActivity : AppCompatActivity() {
         val label = HapBundleLoader.resolveLabel(hap.contentDir, hap.moduleConfig)
         val items = arrayOf(
             getString(R.string.btn_app_info),
+            getString(R.string.btn_add_to_home),
             getString(R.string.btn_uninstall)
         )
         AlertDialog.Builder(this)
@@ -285,7 +289,8 @@ class MainActivity : AppCompatActivity() {
             .setItems(items) { _, which ->
                 when (which) {
                     0 -> showHapInfoDialog(hap)
-                    1 -> confirmUninstall(hap)
+                    1 -> pinShortcut(hap)
+                    2 -> confirmUninstall(hap)
                 }
             }
             .show()
@@ -378,6 +383,92 @@ class MainActivity : AppCompatActivity() {
             }
             .setNegativeButton(android.R.string.cancel, null)
             .show()
+    }
+
+    private fun pinShortcut(hap: InstalledHap) {
+        val label = HapBundleLoader.resolveLabel(hap.contentDir, hap.moduleConfig)
+        val shortcutId = "${hap.bundleName}.${hap.moduleName}.${hap.mainAbility}"
+
+        Thread {
+            val icon = loadHapIconBitmap(hap)
+            runOnUiThread {
+                val intent = Intent(this, HoaShortcutActivity::class.java).apply {
+                    putExtra("BUNDLE_NAME", hap.bundleName)
+                    putExtra("MODULE_NAME", hap.moduleName)
+                    putExtra("ABILITY_NAME", hap.mainAbility)
+                    action = Intent.ACTION_VIEW
+                }
+
+                val builder = ShortcutInfo.Builder(this, shortcutId)
+                    .setShortLabel(label)
+                    .setLongLabel(label)
+                    .setIntent(intent)
+                if (icon != null) {
+                    builder.setIcon(Icon.createWithBitmap(icon))
+                }
+                val shortcut = builder.build()
+
+                val manager = getSystemService(ShortcutManager::class.java)
+                if (manager != null && manager.isRequestPinShortcutSupported) {
+                    // requestPinShortcut requires the shortcut to be a dynamic
+                    // shortcut first.  Once called, the system serialises the
+                    // shortcut data into the pin-confirmation dialog — it won't
+                    // re-query the dynamic list, so we can remove it immediately
+                    // to keep the long-press menu clean.
+                    manager.addDynamicShortcuts(listOf(shortcut))
+                    manager.requestPinShortcut(shortcut, null)
+                    manager.removeDynamicShortcuts(listOf(shortcutId))
+                    Toast.makeText(
+                        this, getString(R.string.toast_shortcut_pinned_fmt, label), Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    Toast.makeText(
+                        this, getString(R.string.toast_shortcut_pin_failed), Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }.start()
+    }
+
+    // Loads the HAP icon bitmap for the shortcut.  Reuses the same
+    // resolution logic as the list adapter and task-description code.
+    private fun loadHapIconBitmap(hap: InstalledHap): android.graphics.Bitmap? {
+        val fullModuleName = "${hap.bundleName}.${hap.moduleName}"
+        val moduleJsonFile = java.io.File(filesDir, "hap/$fullModuleName/module.json")
+        if (!moduleJsonFile.exists()) return null
+
+        try {
+            val json = org.json.JSONObject(moduleJsonFile.readText())
+            val moduleObj = json.getJSONObject("module")
+            val abilities = moduleObj.optJSONArray("abilities")
+            if (abilities != null) {
+                for (i in 0 until abilities.length()) {
+                    val ability = abilities.getJSONObject(i)
+                    if (ability.getString("name") == hap.mainAbility) {
+                        val iconRef = ability.optString("startWindowIcon", "")
+                            .ifEmpty { ability.optString("icon", "") }
+                        return loadBitmapFromRef(fullModuleName, iconRef)
+                    }
+                }
+            }
+        } catch (_: Exception) { }
+        return null
+    }
+
+    // Resolve "$media:name" to a Bitmap from resources/base/media/.
+    private fun loadBitmapFromRef(fullModuleName: String, iconRef: String): android.graphics.Bitmap? {
+        if (!iconRef.startsWith("\$media:")) return null
+        val mediaName = iconRef.removePrefix("\$media:")
+        val mediaDir = java.io.File(filesDir, "hap/$fullModuleName/resources/base/media")
+        if (!mediaDir.isDirectory) return null
+
+        for (ext in listOf("png", "jpg", "jpeg", "webp")) {
+            val file = java.io.File(mediaDir, "$mediaName.$ext")
+            if (file.exists()) {
+                return android.graphics.BitmapFactory.decodeFile(file.absolutePath)
+            }
+        }
+        return null
     }
 
     private inner class HapListAdapter : BaseAdapter() {

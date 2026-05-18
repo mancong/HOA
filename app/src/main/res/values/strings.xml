@@ -58,6 +58,11 @@
     <string name="label_size">Size</string>
     <string name="label_pages">Pages</string>
 
+    <!-- Long-press menu -->
+    <string name="btn_add_to_home">Add to Home</string>
+    <string name="toast_shortcut_pinned_fmt">Shortcut created: %1$s</string>
+    <string name="toast_shortcut_pin_failed">Failed to create shortcut</string>
+
     <!-- item_hap -->
     <string name="desc_hap_icon">HAP icon</string>
 </resources>

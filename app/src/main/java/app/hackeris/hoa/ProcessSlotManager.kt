@@ -6,7 +6,7 @@ import java.io.File
 
 object ProcessSlotManager {
 
-    const val MAX_SLOTS = 5
+    const val MAX_SLOTS = 10
     private const val SLOT_PREFIX = "hap_slot_"
     private const val RESERVED_PREFIX = "RESERVED|"
     private const val RESERVATION_TIMEOUT_MS = 30_000L

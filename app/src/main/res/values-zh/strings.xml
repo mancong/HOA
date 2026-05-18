@@ -59,6 +59,11 @@
     <string name="label_size">大小</string>
     <string name="label_pages">页面</string>
 
+    <!-- Long-press menu -->
+    <string name="btn_add_to_home">添加到桌面</string>
+    <string name="toast_shortcut_pinned_fmt">已创建快捷方式: %1$s</string>
+    <string name="toast_shortcut_pin_failed">创建快捷方式失败</string>
+
     <!-- item_hap -->
     <string name="desc_hap_icon">HAP 图标</string>
 </resources>
