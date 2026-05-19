@@ -58,8 +58,7 @@ android {
 }
 
 dependencies {
-    implementation(files("libs/arkui_android_adapter.jar"))
-    implementation(files("libs/ace_web_webview_android.jar"))
+    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.core.ktx)
