@@ -66,4 +66,11 @@
 
     <!-- item_hap -->
     <string name="desc_hap_icon">HAP 图标</string>
+
+    <!-- Search & sort -->
+    <string name="hint_search_haps">搜索 HAP…</string>
+    <string name="hint_no_search_results">没有匹配的 HAP。</string>
+    <string name="btn_sort_name">名称</string>
+    <string name="btn_sort_time_desc">最近</string>
+    <string name="btn_sort_time_asc">最早</string>
 </resources>

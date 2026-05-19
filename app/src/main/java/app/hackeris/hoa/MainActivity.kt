@@ -8,6 +8,7 @@ import android.graphics.drawable.Icon
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
@@ -16,9 +17,14 @@ import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import app.hackeris.hoa.hap.HapBundleLoader
 import app.hackeris.hoa.hap.HapInstaller
 import app.hackeris.hoa.hap.InstalledHap
+
+enum class SortMode {
+    NAME, TIME_DESC, TIME_ASC
+}
 
 class MainActivity : AppCompatActivity() {
 
@@ -27,9 +33,14 @@ class MainActivity : AppCompatActivity() {
     private lateinit var emptyHint: TextView
     private lateinit var installButton: Button
     private lateinit var runtimeStatus: TextView
+    private var searchView: SearchView? = null
+    private var sortMenuItem: android.view.MenuItem? = null
 
     private val hapAdapter = HapListAdapter()
+    private var allHaps = listOf<InstalledHap>()
     private var installedHaps = listOf<InstalledHap>()
+    private var sortMode = SortMode.NAME
+    private var searchQuery = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -106,16 +117,89 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun refreshHapList() {
-        installedHaps = installer.getInstalledHaps()
+        allHaps = installer.getInstalledHaps()
+        filterAndSort()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.main_toolbar, menu)
+
+        val searchItem = menu.findItem(R.id.action_search)
+        searchView = (searchItem.actionView as SearchView).apply {
+            queryHint = getString(R.string.hint_search_haps)
+            setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    searchQuery = query?.trim()?.lowercase() ?: ""
+                    filterAndSort()
+                    clearFocus()
+                    return true
+                }
+
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    searchQuery = newText?.trim()?.lowercase() ?: ""
+                    filterAndSort()
+                    return true
+                }
+            })
+        }
+
+        sortMenuItem = menu.findItem(R.id.action_sort).apply {
+            title = sortLabel()
+            setOnMenuItemClickListener {
+                sortMode = when (sortMode) {
+                    SortMode.NAME -> SortMode.TIME_DESC
+                    SortMode.TIME_DESC -> SortMode.TIME_ASC
+                    SortMode.TIME_ASC -> SortMode.NAME
+                }
+                title = sortLabel()
+                filterAndSort()
+                true
+            }
+        }
+
+        return true
+    }
+
+    private fun filterAndSort() {
+        val filtered = if (searchQuery.isEmpty()) {
+            allHaps
+        } else {
+            allHaps.filter { hap ->
+                val label = HapBundleLoader.resolveLabel(hap.contentDir, hap.moduleConfig)
+                label.lowercase().contains(searchQuery) ||
+                    hap.bundleName.lowercase().contains(searchQuery) ||
+                    hap.moduleName.lowercase().contains(searchQuery)
+            }
+        }
+
+        installedHaps = when (sortMode) {
+            SortMode.NAME -> filtered.sortedBy {
+                HapBundleLoader.resolveLabel(it.contentDir, it.moduleConfig).lowercase()
+            }
+            SortMode.TIME_DESC -> filtered.sortedByDescending { it.contentDir.lastModified() }
+            SortMode.TIME_ASC -> filtered.sortedBy { it.contentDir.lastModified() }
+        }
+
         hapAdapter.notifyDataSetChanged()
 
         if (installedHaps.isEmpty()) {
             hapList.visibility = View.GONE
             emptyHint.visibility = View.VISIBLE
+            emptyHint.text = if (allHaps.isEmpty()) {
+                getString(R.string.hint_no_haps)
+            } else {
+                getString(R.string.hint_no_search_results)
+            }
         } else {
             hapList.visibility = View.VISIBLE
             emptyHint.visibility = View.GONE
         }
+    }
+
+    private fun sortLabel(): String = when (sortMode) {
+        SortMode.NAME -> getString(R.string.btn_sort_name)
+        SortMode.TIME_DESC -> getString(R.string.btn_sort_time_desc)
+        SortMode.TIME_ASC -> getString(R.string.btn_sort_time_asc)
     }
 
     private fun openHapPicker() {
