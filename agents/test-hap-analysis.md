@@ -1,6 +1,6 @@
 # 测试 HAP 样本分析
 
-**样本文件**: `/data/share/entry-default-unsigned.hap` (123KB, HAP v2.0 ZIP 格式)
+**样本文件**: entry-default-unsigned.hap（123KB, HAP v2.0 ZIP 格式）
 
 ## 基本信息
 

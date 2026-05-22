@@ -1,6 +1,6 @@
 # ArkUI-X weekly_20260518 移植 Patch 记录
 
-> 源码根目录: `/data/share/hoa2/arkui-x`（repo 管理，含多个独立 git 仓库）
+> 源码根目录: arkui-x 源码树（repo 管理，含多个独立 git 仓库）
 >
 > 目标: 使 ArkUI-X 的 Android 运行时能够加载并执行 OHOS 原生格式的 HAP
 

@@ -20,7 +20,7 @@
 
 ### 阶段 1 验证 HAP: ArkUI-X 格式
 
-**文件**: `/data/share/arkui-x-example/entry/build/default/outputs/default/entry-default-unsigned.hap` (113KB)
+**文件**: ArkUI-X 示例工程构建产出的 entry-default-unsigned.hap（113KB）
 
 先用 ArkUI-X 格式 HAP 验证基线流程跑通（构建 → 加载 .so → EcmaVM 创建 → ABC 加载 → 页面渲染），无需处理 record 名差异。
 
@@ -33,7 +33,7 @@
 
 ### 阶段 2 验证 HAP: OHOS 原生格式
 
-**文件**: `/data/share/entry-default-unsigned.hap` (123KB)
+**文件**: OHOS 原生格式 entry-default-unsigned.hap（123KB）
 
 基线跑通后，切换到 OHOS 格式 HAP，验证 3 个 Patch 的效果。
 
@@ -42,7 +42,7 @@
 - srcEntry: `./ets/entryability/EntryAbility.ets`
 - modules.abc: 12.8KB（3 个 record，含 backup extensionAbility）
 - ABC record 格式: `entry/src/main/ets/...`（无 bundleName，有 src/main/）
-- 源码工程: `/data/share/harmony-example/`
+- 源码工程: harmony-example（本地开发用 HAP 示例）
 
 ---
 
