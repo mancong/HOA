@@ -22,7 +22,7 @@
     <string name="btn_extracting">Extracting…</string>
     <string name="btn_extract_hap">Extract Test HAP from Assets</string>
     <string name="btn_re_extract">Re-extract Test HAP from Assets</string>
-    <string name="btn_launch_test_hap">Launch Test HAP</string>
+    <string name="btn_launch_test_hap">Launch HAP</string>
     <string name="label_checking">Checking…</string>
     <string name="toast_extracted">Test HAP extracted</string>
     <string name="toast_extract_failed">Extraction failed</string>

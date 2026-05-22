@@ -23,7 +23,7 @@
     <string name="btn_extracting">解压中…</string>
     <string name="btn_extract_hap">从 Assets 解压测试 HAP</string>
     <string name="btn_re_extract">重新解压测试 HAP</string>
-    <string name="btn_launch_test_hap">启动测试 HAP</string>
+    <string name="btn_launch_test_hap">启动 HAP</string>
     <string name="label_checking">检查中…</string>
     <string name="toast_extracted">测试 HAP 已解压</string>
     <string name="toast_extract_failed">解压失败</string>
