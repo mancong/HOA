@@ -1,6 +1,6 @@
 # OHOS HAP on Android — 技术调研文件索引
 
-> **当前状态** (2026-05-21): ArkUI-X 6.1-Release 移植完成，5 个仓库定向适配，5 个已安装 HAP 中 4 个正常渲染。详见 [PROGRESS.md](PROGRESS.md)。
+> **当前状态** (2026-05-25): ArkUI-X weekly_20260518 移植完成，5 个仓库定向适配，5 个已安装 HAP 中 4 个正常渲染 + 1 个部分渲染（HDS mock）。详见 [PROGRESS.md](PROGRESS.md)。
 
 ## 项目目标
 
@@ -53,6 +53,7 @@
 
 - [abc-bytecode-format.md](abc-bytecode-format.md) — PANDA ABC 二进制格式、VM 加载执行流水线、es2panda 编译管线、NAPI 桥接原理、跨平台执行条件
 - [arkui-x-build-system.md](arkui-x-build-system.md) — ArkUI-X GN 构建架构、仓库组织（直接复用 OHOS 核心代码）、平台动态发现机制、分层设计原则
+- [hms-hds-stub.md](hms-hds-stub.md) — **HDS Stub 解决方案（已实施）**：嵌入式 ABC mock（ViewPU 组合 HdsActionBar）+ ReplaceModuleThroughFeature 重定向，覆盖 ES import 和 HSP record 双路径；ABC-only 模式、export default 关键发现、SDK 声明 vs 编译器白名单双来源分析
 - [test-hap-analysis.md](test-hap-analysis.md) — 测试 HAP 样本完整分析: 内部结构、3 个模块记录、10 个外部依赖分类（@ohos: / @native: / L-class）、复杂度评估
 
 ### 渲染
@@ -82,6 +83,7 @@
 4. **OHOS HAP 路径含 src/main/** — `entry/src/main/ets/entryability/EntryAbility`，与 ArkUI-X 路径前缀不同，加剧 entryPoint 不匹配
 5. **Stage 模型单引擎共享** — 多个 ability 共享一个 ArkTS 引擎实例，Android 端只需一个 EcmaVM，简化了集成
 6. **需自己构建 .so** — `ExecuteModuleBuffer` 在 libarkui_android.so 中是 hidden 符号，dlsym 不可访问，必须基于 OHOS 源码 + ArkUI-X adapter 层自行编译
+7. **HMS 组件可通过嵌入式 ABC mock 解决** — `@hms:` 前缀模块虽为华为专有 SDK，但通过 ABC-only 模式的 ViewPU 组合组件可提供功能等价替代，无需真实 HMS SDK
 
 ---
 
@@ -109,6 +111,6 @@
 
 **思路**: 以 ArkUI-X 6.1-Release 的 Android 构建体系为基础，对运行时中模块路由、record 名解析、渲染管线初始化的关键路径做定向适配，使其兼容 OHOS HAP 格式。
 
-**实施范围**: 5 个仓库，10 个 cherry-pick + 9 个 manual commit。详见 [ARKUI-X_PATCHES.md](../docs/ARKUI-X_PATCHES.md)。
+**实施范围**: 7 个仓库，10 个 cherry-pick + 12 个 manual commit。详见 [ARKUI-X_PATCHES.md](../docs/ARKUI-X_PATCHES.md)。
 
-核心解决：ABC record 名双维度适配（SDK 5.0/6.0）、模块名拼接一致性（SplicingModuleName）、RSUIDirector 创建（6.1 白屏修复）、多实例渲染（RSClient + MultiInstance）。
+核心解决：ABC record 名双维度适配（SDK 5.0/6.0）、模块名拼接一致性（SplicingModuleName）、RSUIDirector 创建（6.1 白屏修复）、多实例渲染（RSClient + MultiInstance）、HMS HDS 组件 mock（嵌入式 ABC + module_resolver 重定向）。

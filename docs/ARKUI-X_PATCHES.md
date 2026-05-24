@@ -8,12 +8,12 @@
 
 | 仓库 | 上游 | 已提交 (cherry-pick) | 新增 (hoa-weekly) |
 |------|------|---------------------|-------------------|
-| `arkcompiler/ets_runtime` | `openharmony/arkcompiler_ets_runtime` | 2 | 0 |
+| `arkcompiler/ets_runtime` | `openharmony/arkcompiler_ets_runtime` | 2 | 1 |
 | `foundation/appframework` | `arkui-x/app_framework` | 2 | 4 |
 | `foundation/arkui/ace_engine/adapter/android` | `arkui-x/arkui_for_android` | 3 | 7 |
 | `foundation/arkui/napi` | `openharmony/arkui_napi` | 2 | 0 |
 | `build` | `openharmony/build` | 1 | 0 |
-| `plugins` | `arkui-x/plugins` | 0 | 3 |
+| `plugins` | `arkui-x/plugins` | 0 | 4 |
 | `build_plugins` | `arkui-x/build_plugins` | 0 | 0 |
 
 ---
@@ -43,6 +43,14 @@ SDK 5.0 和 6.0 的 ABC record 名格式不同。SDK 6.0 使用 `bundleName/entr
 - `module.cpp` — `GetOutEntryPoint` 条件收窄为 `IsNormalizedOhmUrlPack() && !IsOhosSdk6Format()`
 - `module_path_helper.cpp` — `ParseAbcPathAndOhmUrl` 同理收窄
 - `js_pandafile_executor.cpp` — `ExecuteModuleBuffer` 格式检测 + 一次性 bootstrap retry
+
+### 新增 (hoa-weekly)
+
+#### 1.3 `16a93345c` — fix(ets_runtime): 将 HDS HSP record 引用重定向到 NAPI stub 模块
+
+HAP 字节码包含形如 `com.huawei.hmos.hdscomponent/HdsComponent/ets/pages/HdsActionBar` 的直接 record 引用。Android 端无真实 HDS HSP，在 `ReplaceModuleThroughFeature` 中将此类引用统一路由到 `@hms:hds.hdsBaseComponent`，由 HDS 桩插件提供替代实现。
+
+- `module_resolver.cpp` — `ReplaceModuleThroughFeature()` 末尾新增 `com.huawei.hmos.hdscomponent` 前缀匹配，重定向到 `@hms:hds.hdsBaseComponent`
 
 ---
 
@@ -216,27 +224,43 @@ Web 组件的 `src` 属性设置声明式路径（`Web({ src: "resource://rawfil
 
 ### 新增 (hoa-weekly)
 
-#### 6.1 HMS HDS Base Component Stub（`plugins/hms/hds/`）— 2026-05-22
+#### 6.1 HMS HDS Base Component Stub（`plugins/hms/hds/`）— 2026-05-25 更新
 
-Dashboard HAP (`top.rayawa.dashboard`) 导入 `@hms:hds.hdsBaseComponent`，ArkUI-X 不支持 HMS 模块解析链路，导致 `SyntaxError`。
+hw_base_calendar HAP (`com.hw.base_calendar`) 导入 `@hms:hds.hdsBaseComponent`，ArkUI-X 不支持 HMS 模块解析链路，导致 `SyntaxError` → 白屏。
 
-HDS（Huawei Design System）是 HMS SDK 的 UI 组件库（`@kit.UIDesignKit`, API 18/5.1.0），提供 `HdsNavigation`、`HdsNavDestination` 等对标准 ArkUI 组件的设计规范包装。ArkUI-X 没有 HMS `system_kits_config.json` 配置、没有 `SetHmsModuleList` 注册、没有 HDS ABC 实现——整条链路不存在。
+HDS（Huawei Design System）是 HMS SDK 的 UI 组件库（`@kit.UIDesignKit`, API 18/5.1.0），提供 `HdsNavigation`、`HdsNavDestination`、`HdsActionBar` 等对标准 ArkUI 组件的设计规范包装。ArkUI-X 没有 HMS `system_kits_config.json` 配置、没有 `SetHmsModuleList` 注册、没有 HDS ABC 实现——整条链路不存在。
 
-**策略**: 创建 NAPI 模块 `hds.hdsBaseComponent`，将 HDS 包装组件 1:1 委托至标准 ArkUI 内置组件（`HdsNavigation` → global `Navigation`，`HdsNavDestination` → global `NavDestination`），Instance/Attribute 辅助类返回 `undefined` 桩函数，枚举（`ScrollEffectType`、`HdsNavigationTitleMode`）原样导出。
+**策略**: 嵌入式 ABC mock（ABC-only 模式，参考 popup 插件）+ module_resolver 重定向，覆盖 ES import 和 HSP record 双路径。
 
-基于编译器白名单（`third_party/typescript/src/compiler/ohApi.ts:1541-1555`）中的未发布组件名，额外预委托 `HdsTabs` → `Tabs`、`HdsListItemCard` → `ListItem`，以实现前向兼容。
+**实现方式**:
+- JS mock 源码 (`src/hds_component_mock.js`) 提供 ViewPU 组合实现的 HdsActionBar（Row + Button + Image）、ActionBarButton/ActionBarStyle 数据类、组件委托（Navigation/NavDestination/Tabs/ListItem）、枚举、stub 函数
+- 三步 ABC 构建流水线：`es2abc --module` → `llvm-objcopy` 嵌入 → `ohos_source_set` 链接进 `libhms_hds.so`
+- C++ stub 简化为 ABC-only 模式（`nm_register_func = nullptr`），通过 `napi_module_with_js_register` 同时注册 `hds.hdsBaseComponent` 和 `UIDesignKit` 两个模块名
+- 配合 `arkcompiler/ets_runtime` 中 `ReplaceModuleThroughFeature` 的 HDS HSP record 重定向（commit `16a93345c`）
 
 **组件委托状态**:
 
 | 导出 | 委托至 | 状态 |
 |------|--------|------|
-| `HdsNavigation` | global `Navigation` | 已实现 |
+| `HdsActionBar` | ViewPU 组合（Row + Button + Image） | 已实现（二级：组合实现） |
+| `ActionBarButton` | JS class（属性容器） | 已实现 |
+| `ActionBarStyle` | JS class（属性容器） | 已实现 |
+| `HdsNavigation` | global `Navigation` | 已实现（一级：委托） |
 | `HdsNavDestination` | global `NavDestination` | 已实现 |
-| `HdsTabs` | global `Tabs` | 预委托（编译器白名单） |
-| `HdsListItemCard` | global `ListItem` | 预委托（编译器白名单） |
+| `HdsTabs` | global `Tabs` | 已实现 |
+| `HdsListItemCard` | global `ListItem` | 已实现 |
+| `HdsListItem` | global `ListItem` | 已实现 |
+| `PrefixImage` | global `Image` | 已实现 |
+| `SuffixButton` | global `Button` | 已实现 |
+| `SuffixArrowIconText` | global `Row` | 已实现 |
 | `ScrollEffectType` | 枚举 `{ COMMON_BLUR: 0 }` | 已实现 |
 | `HdsNavigationTitleMode` | 枚举 `{ FREE: 0, FULL: 1, MINI: 2 }` | 已实现 |
+| `DividerMode` | 枚举 `{ AUTO: 0, ALWAYS: 1, NONE: 2 }` | 已实现 |
+| `HdsNavDestinationTitleMode` | 枚举 `{ FREE: 0, FULL: 1, MINI: 2 }` | 已实现 |
 | Instance/Attribute 类 (8个) | `undefined` 桩函数 | 已实现 |
+| `HdsTabsController` | `undefined` 桩函数 | 已实现 |
+
+**关键技术点**: `export default { ... }` 是 ABC-only 模式的必需——缺失导致 `GetExportObjectFromBuffer("default")` 查找失败，所有 named export 不可见。
 
 **调用方 (HOA 项目)**: 在 `HoaApplication.kt` 的 `initArkUIX()` 中：
 
@@ -301,6 +325,11 @@ override fun onCreate() {
 
 以下变更已提交到 hoa-weekly（非 cherry-pick，直接创建的新 patch）：
 
+### arkcompiler/ets_runtime
+| 文件 | 变更 |
+|------|------|
+| `ecmascript/module/module_resolver.cpp` | ReplaceModuleThroughFeature 新增 HDS HSP record 重定向 |
+
 ### foundation/appframework
 | 文件 | 变更 |
 |------|------|
@@ -323,8 +352,9 @@ override fun onCreate() {
 ### plugins
 | 文件 | 变更 |
 |------|------|
-| `hms/hds/BUILD.gn` | HDS stub 插件构建定义 |
-| `hms/hds/hds_base_component_stub.cpp` | HDS 组件委托 + 枚举导出 |
+| `hms/hds/BUILD.gn` | HDS stub 三步 ABC 构建流水线（es2abc + gen_js_obj + source_set） |
+| `hms/hds/hds_base_component_stub.cpp` | ABC-only 模式注册（nm_register_func = nullptr），双模块名 |
+| `hms/hds/src/hds_component_mock.js` | ViewPU 组合 HdsActionBar + 所有 HDS 导出 |
 | `plugin_lib.gni` | common_plugin_libs 新增 `"hms/hds"` |
 | `web/webview/js_web_webview.cpp` | LoadUrl() 新增 resource://rawfile 转换 |
 
